@@ -1,3 +1,9 @@
+bulk-rna-immuno-inflammation-cohorts
+.DS_Store
+*.ipynb_checkpoints
+data
+*.h5ad
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

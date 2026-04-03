@@ -1,0 +1,84 @@
+[project]
+name = "zs-perturbation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "anndata>=0.12.10",
+    "scanpy>=1.12",
+    "scikit-misc>=0.5.2",
+    "scipy>=1.17.1",
+    "torch==2.6.0",
+    "tqdm>=4.67.3",
+    "transformers>=5.4.0",
+]
+
+[dependency-groups]
+dev = ["ipykernel>=7.2.0", "ipywidgets>=8.1.8", "ruff>=0.15.9"]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E",
+    "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+    # DoNotUseAssert
+    "S101",
+    "TRY003",
+    "RUF012",
+    "B904",
+    "E722",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"__init__.py" = ["F401", "I001"]
+"*.ipynb" = ["F401"]
+
+[tool.ruff.format]
+preview = true
