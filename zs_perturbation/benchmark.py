@@ -6,7 +6,7 @@ from . import BENCHMARK_FILE, TO_GENE_SYMBOL
 DF_BENCH = pd.read_csv(BENCHMARK_FILE, index_col=0)
 
 
-def compute_scores(adata: AnnData, disease_abbrev: str, var_key: str) -> pd.DataFrame:
+def extract_scores(adata: AnnData, disease_abbrev: str, var_key: str) -> pd.DataFrame:
     """Compute the target efficacy score and ground truth for a given method.
 
     Args:
@@ -23,7 +23,7 @@ def compute_scores(adata: AnnData, disease_abbrev: str, var_key: str) -> pd.Data
 
     def _score(genes: list[str]) -> float:
         entrez_ids = to_entrez_id[[TO_GENE_SYMBOL.get(gene, gene) for gene in genes]].values
-        return adata.var.loc[entrez_ids, var_key].min()
+        return adata.var.loc[entrez_ids, var_key].mean()
 
     df_disease = DF_BENCH[DF_BENCH["disease_abbrev"] == disease_abbrev]
 

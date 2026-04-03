@@ -13,6 +13,10 @@ def download_dataset() -> None:
     """
     Downloads the dataset from Hugging Face Hub inside the current directory.
     """
+    if Path(DATASET_NAME).exists():
+        print(f"Dataset '{DATASET_NAME}' already exists. Skipping download.")
+        return
+
     snapshot_download(repo_id=f"ScientaLab/{DATASET_NAME}", repo_type="dataset", local_dir=DATASET_NAME)
 
 
