@@ -48,4 +48,6 @@ def compute_encoder_score(
 
     grads = np.concatenate(grads, axis=0)
 
-    return 1 / (1 + np.exp(-grads.mean(0)))
+    mean_grads = grads.mean(0)
+
+    return mean_grads / np.linalg.norm(mean_grads)
