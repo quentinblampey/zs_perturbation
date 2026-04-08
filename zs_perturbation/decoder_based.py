@@ -17,7 +17,7 @@ def register_hook():
     model.layers[-2].register_forward_hook(hook_fn)
 
 
-def store_z_intermediate(adata: AnnData, device: str = "cpu", batch_size: int = 25) -> None:
+def store_z_intermediate(adata: AnnData, device: str = "cpu", batch_size: int = 10) -> None:
     adata.obsm["z_intermediate"] = np.zeros((adata.n_obs, 256))
 
     token_ids = tokenizer.convert_tokens_to_ids(adata.var_names)
@@ -39,7 +39,7 @@ def compute_healthy_score(
     healthy_centroid: np.ndarray,
     genes: list[str],
     device: str = "cpu",
-    batch_size: int = 25,
+    batch_size: int = 10,
 ) -> None:
     adata.var["mean_healthy_score"] = 0.0
 
@@ -49,8 +49,12 @@ def compute_healthy_score(
     token_ids = tokenizer.convert_tokens_to_ids(adata.var_names)
     token_ids_tensor = torch.tensor(token_ids, dtype=torch.long, device=device)
 
+    to_entrez_id = pd.Series(adata.var_names, index=adata.var["gene_symbols"])
+
     for gene_index, gene in enumerate(genes):
         print(f"Processing gene {gene} ({gene_index + 1}/{len(genes)})")
+        entrez_id = to_entrez_id[gene]
+
         for i in tqdm(range(0, adata.n_obs, batch_size), desc="Processing batches"):
             batch_adata = adata[i : i + batch_size]
 
@@ -61,7 +65,7 @@ def compute_healthy_score(
 
             predicted_expression = model.decode(output.gene_embeddings)
 
-            loss = predicted_expression[:, i].mean()
+            loss = -predicted_expression[:, adata.var_names.get_loc(entrez_id)].mean()
             loss.backward()
 
             adata.obsm["z_intermediate"][i : i + batch_size] = z_holder["z"][:, 0].numpy(force=True)
@@ -75,5 +79,4 @@ def compute_healthy_score(
 
         adata.obs["healthy_score"] = adata.obsm["grad"] @ healthy_direction
 
-        to_entrez_id = pd.Series(adata.var_names, index=adata.var["gene_symbols"])
-        adata.var.loc[to_entrez_id[gene], "mean_healthy_score"] = adata.obs["healthy_score"].mean()
+        adata.var.loc[entrez_id, "mean_healthy_score"] = adata.obs["healthy_score"].mean()

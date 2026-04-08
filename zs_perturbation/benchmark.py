@@ -6,6 +6,15 @@ from . import BENCHMARK_FILE, TO_GENE_SYMBOL
 DF_BENCH = pd.read_csv(BENCHMARK_FILE, index_col=0)
 
 
+def genes_of_interest(disease_abbrev: str) -> list[str]:
+    df_bench_disease = DF_BENCH[DF_BENCH["disease_abbrev"] == disease_abbrev]
+
+    genes = df_bench_disease.target_genes.str.split(";").explode().unique()
+    genes = [TO_GENE_SYMBOL.get(gene, gene) for gene in genes]
+
+    return genes
+
+
 def extract_scores(adata: AnnData, disease_abbrev: str, var_key: str) -> pd.DataFrame:
     """Compute the target efficacy score and ground truth for a given method.
 
