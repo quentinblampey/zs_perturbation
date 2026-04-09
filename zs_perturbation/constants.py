@@ -1,3 +1,5 @@
+from pathlib import Path
+
 DATASET_NAME = "bulk-rna-immuno-inflammation-cohorts"
 BENCHMARK_FILE = "benchmark_drug_target_disease_matrix.csv"
 
@@ -13,3 +15,7 @@ TO_GENE_SYMBOL = {
     "PDE4": "PDE4A",
     "TL1A": "TNFSF15",
 }
+
+REPO_ROOT = Path(__file__).parent.parent
+
+DATASET_PATH = REPO_ROOT / DATASET_NAME

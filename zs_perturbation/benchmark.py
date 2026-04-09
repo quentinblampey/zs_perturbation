@@ -1,9 +1,9 @@
 import pandas as pd
 from anndata import AnnData
 
-from . import BENCHMARK_FILE, TO_GENE_SYMBOL
+from . import BENCHMARK_FILE, REPO_ROOT, TO_GENE_SYMBOL
 
-DF_BENCH = pd.read_csv(BENCHMARK_FILE, index_col=0)
+DF_BENCH = pd.read_csv(REPO_ROOT / BENCHMARK_FILE, index_col=0)
 
 
 def genes_of_interest(disease_abbrev: str) -> list[str]:

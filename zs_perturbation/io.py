@@ -1,26 +1,24 @@
-from pathlib import Path
-
 import anndata
 import scanpy as sc
 from anndata import AnnData
 from huggingface_hub import snapshot_download
 
-from . import DATASET_NAME, genes_of_interest
+from . import DATASET_NAME, DATASET_PATH, genes_of_interest
 
 
 def download_dataset() -> None:
     """
     Downloads the dataset from Hugging Face Hub inside the current directory.
     """
-    if Path(DATASET_NAME).exists():
+    if DATASET_PATH.exists():
         print(f"Dataset '{DATASET_NAME}' already exists. Skipping download.")
         return
 
-    snapshot_download(repo_id=f"ScientaLab/{DATASET_NAME}", repo_type="dataset", local_dir=DATASET_NAME)
+    snapshot_download(repo_id=f"ScientaLab/{DATASET_NAME}", repo_type="dataset", local_dir=DATASET_PATH)
 
 
 def load_dataset(disease_abbrev: str) -> AnnData:
-    adata = anndata.read_h5ad(Path(DATASET_NAME) / disease_abbrev / "dataset.h5ad")
+    adata = anndata.read_h5ad(DATASET_PATH / disease_abbrev / "dataset.h5ad")
 
     sc.pp.highly_variable_genes(adata, n_top_genes=2000, flavor="seurat_v3")
 

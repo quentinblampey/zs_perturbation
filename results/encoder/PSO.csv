@@ -1,0 +1,17 @@
+drug_name,y_true,y_score
+Belimumab,0,0.5007791
+Brodalumab,1,0.49002394
+Crisaborole,1,0.50603163
+Dupilumab,0,0.50924045
+Etanercept,1,0.50456345
+Etokimab,0,0.49882486
+Guselkumab,1,0.50715405
+Ixékizumab,1,0.5021268
+Nemolizumab,0,0.5058834
+Omalizumab,0,0.5035361
+Rituximab,0,0.5027733
+Ruxolitinib,1,0.4979846
+Secukinumab,1,0.5015969
+Tapinarof,1,0.501038
+Tralokinumab,0,0.5051425
+Vibozimod,1,0.49900883

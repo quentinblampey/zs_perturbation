@@ -1,0 +1,15 @@
+drug_name,y_true,y_score
+Abatacept,1,0.4912058
+Baricitinib,1,0.4952829
+Crisaborole,0,0.4973301
+Dupilumab,0,0.4882336
+Etokimab,0,0.5068925
+Golimumab,1,0.49508643
+Nemolizumab,0,0.50114006
+Omalizumab,0,0.50452244
+Otelixizumab,0,0.5372192
+Rituximab,1,0.49662676
+Ruxolitinib,1,0.4952829
+Tapinarof,0,0.50568426
+Teplizumab,1,0.5372192
+Tralokinumab,0,0.5075178
