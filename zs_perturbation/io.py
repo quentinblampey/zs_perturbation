@@ -18,6 +18,14 @@ def download_dataset() -> None:
 
 
 def load_dataset(disease_abbrev: str) -> AnnData:
+    """Load and preprocess a dataset for a given disease.
+
+    Args:
+        disease_abbrev: The disease abbreviation.
+
+    Returns:
+        The loaded and preprocessed AnnData object.
+    """
     adata = anndata.read_h5ad(DATASET_PATH / disease_abbrev / "dataset.h5ad")
 
     sc.pp.highly_variable_genes(adata, n_top_genes=2000, flavor="seurat_v3")

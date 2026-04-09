@@ -10,6 +10,10 @@ z_holder: dict[str, torch.Tensor] = {}
 
 
 def register_hook():
+    """
+    Hook to store the output of the second to last encoder layer.
+    """
+
     def hook_fn(module, _, output):
         z_holder["z"] = output
         output.retain_grad()
@@ -18,6 +22,13 @@ def register_hook():
 
 
 def store_z_intermediate(adata: AnnData, device: str = "cpu", batch_size: int = 10) -> None:
+    """Store the output of the second to last layer in `adata.obsm["z_intermediate"]`.
+
+    Args:
+        adata: An AnnData object.
+        device: The device to use.
+        batch_size: The batch size for processing.
+    """
     adata.obsm["z_intermediate"] = np.zeros((adata.n_obs, 256))
 
     token_ids = tokenizer.convert_tokens_to_ids(adata.var_names)
@@ -41,6 +52,17 @@ def compute_healthy_score(
     device: str = "cpu",
     batch_size: int = 10,
 ) -> None:
+    """Compute how much the gradient originated from the backpropagation of each gene-related loss
+    is aligned with the direction of the healthy centroid in the latent space,
+    and store the result in `adata.var["mean_healthy_score"]`.
+
+    Args:
+        adata: An AnnData object.
+        healthy_centroid: A numpy array representing the healthy centroid in the latent space.
+        genes: A list of gene symbols for which to compute healthy scores.
+        device: The device to use.
+        batch_size: The batch size for processing.
+    """
     adata.var["mean_healthy_score"] = 0.0
 
     adata.obsm["z_intermediate"] = np.zeros((adata.n_obs, 256))
@@ -65,6 +87,7 @@ def compute_healthy_score(
 
             predicted_expression = model.decode(output.gene_embeddings)
 
+            # down-regulation of the gene
             loss = -predicted_expression[:, adata.var_names.get_loc(entrez_id)].mean()
             loss.backward()
 
@@ -72,11 +95,13 @@ def compute_healthy_score(
 
             grad = z_holder["z"].grad[:, 0].numpy(force=True)
             adata.obsm["grad"][i : i + batch_size] = grad / np.linalg.norm(grad, axis=1, keepdims=True)
+
             z_holder["z"].grad.zero_()
 
         healthy_direction = healthy_centroid - adata.obsm["z_intermediate"].mean(0)
         healthy_direction /= np.linalg.norm(healthy_direction)
 
+        # cosine similarity between the healthy direction and the gene-related gradient (for each sample)
         adata.obs["healthy_score"] = adata.obsm["grad"] @ healthy_direction
 
-        adata.var.loc[entrez_id, "mean_healthy_score"] = adata.obs["healthy_score"].mean()
+        adata.var.loc[entrez_id, "mean_healthy_score"] = adata.obs["healthy_score"].mean()  # mean cosine similarity

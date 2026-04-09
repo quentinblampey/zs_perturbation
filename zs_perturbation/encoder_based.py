@@ -7,6 +7,16 @@ from .eva import model, tokenizer
 
 
 def encode(adata: AnnData, device: str = "cpu", batch_size: int = 25) -> torch.Tensor:
+    """Compute the encoder's embeddings for the whole dataset.
+
+    Args:
+        adata: An `AnnData` object.
+        device: The device to use.
+        batch_size: The batch size.
+
+    Returns:
+        The encoder's embeddings as a `torch.Tensor`.
+    """
     outputs = []
 
     token_ids = tokenizer.convert_tokens_to_ids(adata.var_names)
@@ -27,6 +37,17 @@ def encode(adata: AnnData, device: str = "cpu", batch_size: int = 25) -> torch.T
 def compute_encoder_score(
     adata: AnnData, healthy_centroid: torch.Tensor, device: str = "cpu", batch_size: int = 25
 ) -> np.ndarray:
+    """Compute encoder-based scores for the targets.
+
+    Args:
+        adata: An `AnnData` object.
+        healthy_centroid: A tensor representing the healthy centroid in the latent space.
+        device: The device to use.
+        batch_size: The batch size.
+
+    Returns:
+        An array of scores for each gene in `adata.var_names`.
+    """
     grads = []
 
     token_ids = tokenizer.convert_tokens_to_ids(adata.var_names)
@@ -41,6 +62,7 @@ def compute_encoder_score(
 
         cls_embedding = model.encode(gene_ids=batch_genes, expression_values=batch_values)["cls_embedding"]
 
+        # moving the samples towards the healthy centroid in the latent space
         loss = ((cls_embedding - healthy_centroid) ** 2).sum(axis=1).mean()
         loss.backward()
 
@@ -50,4 +72,4 @@ def compute_encoder_score(
 
     mean_grads = grads.mean(0)
 
-    return mean_grads / np.linalg.norm(mean_grads)
+    return mean_grads / np.linalg.norm(mean_grads)  # normalized mean gradient across samples

@@ -60,3 +60,4 @@ For this quick exercice, I made some decisions that could be improved, and made 
 - For drugs targeting multiple genes, I averaged the score of the genes to get a single scalar for the drug. Instead, I should have modeled the whole drug directly, e.g. bu suming the loss terms into one before backpropagating.
 - I'm more familiar with single-cell and spatial data, therefore I'm not sure the preprocessing I did makes sense for RNAseq data. This may significantly change the results.
 - Further exploration of the model internal states could help developing new ideas.
+- The latent space shows that a dataset has a strong difference with the others, see [here](https://github.com/quentinblampey/zs_perturbation/blob/main/results/latent_space.ipynb). We should take this into account in our methodology.

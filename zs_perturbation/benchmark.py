@@ -7,6 +7,14 @@ DF_BENCH = pd.read_csv(REPO_ROOT / BENCHMARK_FILE, index_col=0)
 
 
 def genes_of_interest(disease_abbrev: str) -> list[str]:
+    """Get the genes used for the benchmark of a given disease.
+
+    Args:
+        disease_abbrev: The disease abbreviation.
+
+    Returns:
+        A list of gene symbols corresponding to the genes used for the benchmark of the given disease.
+    """
     df_bench_disease = DF_BENCH[DF_BENCH["disease_abbrev"] == disease_abbrev]
 
     genes = df_bench_disease.target_genes.str.split(";").explode().unique()
