@@ -43,7 +43,7 @@ uv run python main.py --method decoder
 
 Per-disease results are stored in `./results/decoder/<DISEASE>.csv`.
 
-This time, results are much better - it achieves a mean AUCROC of **0.62**, with **three diseases above 0.7**. See the [results plots here](https://github.com/quentinblampey/zs_perturbation/blob/main/results/plots.ipynb).
+This time, results are much better - it achieves a mean AUCROC of **0.62**, with **three diseases above 0.7**. See the [results plots here](https://github.com/quentinblampey/zs_perturbation/blob/main/results/plots.ipynb). Of course, this could be further improved, see "Known limitations" below.
 
 ### 3️⃣ Classification head and counter factual explanation
 
