@@ -15,7 +15,7 @@ uv sync --dev
 ### 1️⃣ Encoder-based backpropagation
 
 As a first approach, I wanted to try a straightforward approach that doesn't even require a decoder:
-1. In the latent space, compute the euclidean distance between the centroid of the healthy samples and the diseased samples.
+1. In the latent space, compute the euclidean distance between the centroid of the healthy samples and each diseased samples.
 2. Using this distance, we define a loss as the square of this distance.
 3. Then, we backpropagate this loss through diseased samples.
 4. For each input gene, a positive gradient indicates that an up-regulation of this gene would lead to a higher distance to healthy samples. Or, in the other direction: a down-regulation would lead to a smaller distance to healthy samples (which is what we want).
